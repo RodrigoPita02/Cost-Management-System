@@ -1,0 +1,419 @@
+/* Reset básico para garantir consistência */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  line-height: 1.6;
+}
+
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.sidebar {
+  width: 250px;
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Gradiente moderno */
+  color: #fff;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+.sidebar h2 {
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  margin-bottom: 20px;
+}
+
+.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 12px 20px;
+  display: block;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  padding: 40px;
+  transition: margin-left 0.3s ease;
+  background-color: #f7f9fc;
+  min-height: 100vh;
+}
+
+/* Estilo para botões na tabela */
+.table-container td button {
+  padding: 8px 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.table-container td button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table-container td button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.delete-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.delete-btn:hover {
+  background-color: #ff1a1a;
+}
+
+.header {
+  background: #007bff;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  margin-bottom: 10px;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.header p {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.overview {
+  margin-bottom: 40px;
+}
+
+.overview h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.overview-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Permite que os cartões se movam para a linha seguinte se necessário */
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  flex: 1;
+  min-width: 220px; /* Garante que os cartões não fiquem muito pequenos */
+  transition: transform 0.3s ease;
+  margin-right: 20px; /* Espaçamento entre os cards */
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.card p {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+.card:last-child {
+  margin-right: 0; /* Remove o espaço do último card */
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filters input,
+.filters select,
+.filters button {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #007bff;
+}
+
+.filters button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.filters button:hover {
+  background: #0056b3;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+td {
+  background: #fafafa;
+  color: #555;
+}
+
+td:last-child {
+  text-align: center;
+}
+
+tr:nth-child(even) td {
+  background: #f1f1f1;
+}
+
+#cost-distribution {
+  margin: 40px 0;
+}
+
+#costDistributionChart,
+#costBarChart {
+  max-height: 400px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+}
+
+.add-cost {
+  margin-top: 40px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+form label {
+  margin: 10px 0 5px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+form input,
+form select {
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+form input:focus,
+form select:focus {
+  border-color: #007bff;
+}
+
+form button {
+  padding: 12px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background: #0056b3;
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 1024px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .overview-cards {
+    flex-direction: column;
+  }
+
+  .card {
+    min-width: 100%; /* Garante que os cartões ocupem toda a largura disponível */
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    display: none; /* Oculta a barra lateral em telas pequenas */
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .overview-cards {
+    flex-direction: column;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters input,
+  .filters select,
+  .filters button {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .header p {
+    font-size: 16px;
+  }
+
+  .card {
+    padding: 15px;
+    min-width: 100%; /* Garante que os cartões ocupem toda a largura disponível */
+  }
+
+  .filters {
+    padding: 10px;
+  }
+
+  .filters input,
+  .filters select,
+  .filters button {
+    padding: 8px;
+    font-size: 14px;
+    min-width: 100%;
+  }
+
+  form {
+    padding: 15px;
+  }
+
+  form input,
+  form select {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  form button {
+    padding: 10px;
+    font-size: 14px;
+  }
+}

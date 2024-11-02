@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custos Variáveis</title>
+    <!-- Inclua o CSS externo -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #1f6db6;
+        }
+
+        .upload-btn-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .upload-btn-container input[type="file"] {
+            display: none;
+        }
+
+        .upload-btn-container button {
+            margin-left: 5px;
+        }
+
+        /* Margin adjustment for the button in the table */
+        button.upload-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button.upload-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="index.html#add-cost">Adicionar Custo</a></li>
+                <li><a href="index.html#costs">Custos</a></li>
+                <li><a href="index.html#cost-distribution">Distribuição de Custos</a></li>
+                <li><a href="custo-variavel.html">Custos Variáveis</a></li>
+                <li><a href="manage-descriptions.html">Gerenciar Descrições</a></li>
+                <li><a href="custo-secundario.html">Visão Geral</a></li>
+                <li><a href="pdf-merge.html">Unir PDFs</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Gerenciar Custos Variáveis</h1>
+                <p>Adicione e gerencie os seus custos variáveis</p>
+            </header>
+
+            <h2>Adicionar Custo Variável</h2>
+        <form id="custoVariavelForm">
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required>
+            
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" name="descricao" required>
+            
+            <label for="valor">Valor:</label>
+            <input type="number" id="valor" name="valor" step="0.01" required>
+            
+            <label for="tipo_pagamento">Tipo de Pagamento:</label>
+            <select id="tipo_pagamento" name="tipo_pagamento" required></select>
+            
+            <label for="situacao">Situação:</label>
+            <select id="situacao" name="situacao" required></select>
+            
+            <label for="data_pagamento">Data de Pagamento:</label>
+            <input type="date" id="data_pagamento" name="data_pagamento">
+            
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <h2>Lista de Custos Variáveis</h2>
+        <table id="custoVariavelTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Tipo de Pagamento</th>
+                    <th>Situação</th>
+                    <th>Data de Pagamento</th>
+                    <th>Upload PDF</th>
+                    <th>Visualizar PDF</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dados serão inseridos aqui pelo JavaScript -->
+            </tbody>
+        </table>
+    </main>
+    <script src="custo-variavel.js"></script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Custos Secundários</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    .button-container {
+        display: flex; /* Usa flexbox para o layout */
+        gap: 10px; /* Espaço entre os botões */
+    }
+
+    .button-container button {
+        padding: 10px 20px; /* Adiciona algum espaçamento interno */
+        border: none; /* Remove a borda padrão */
+        border-radius: 5px; /* Arredonda os cantos dos botões */
+        background-color: #007BFF; /* Cor de fundo do botão */
+        color: #fff; /* Cor do texto */
+        cursor: pointer; /* Mostra um cursor de mão ao passar sobre o botão */
+    }
+
+    .button-container button:hover {
+        background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+    }
+
+</style>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="index.html#add-cost">Adicionar Custo</a></li>
+                <li><a href="index.html#costs">Custos</a></li>
+                <li><a href="index.html#cost-distribution">Distribuição de Custos</a></li>
+                <li><a href="custo-variavel.html">Custos Variáveis</a></li>
+                <li><a href="manage-descriptions.html">Gerenciar Descrições</a></li>
+                <li><a href="custo-secundario.html">Visão Geral</a></li>
+                <li><a href="pdf-merge.html">Unir PDFs</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Visão Geral</h1>
+                <p>Visualize todos os seus custos</p>
+            </header>
+
+            <h2>Pesquisar por Mês</h2>
+            <form id="filterForm">
+                <label for="month">Selecione o Mês:</label>
+                <input type="month" id="month" name="month">
+                <div class="button-container">
+                    <button type="button" onclick="handleSearch()">Pesquisar</button>
+                    <button type="button" onclick="showAllData()">Mostrar Todos</button>
+                </div>                
+            </form>
+
+            <br>
+            <form id="filterForm">
+                <button onclick="exportTableToPDF()">Exportar Tabela para PDF</button>
+            </form>
+            <br>
+
+            <!-- Gerenciar Custos Secundários -->
+            <section id="manage-costs-secundarios" class="manage-costs-secundarios">
+                <h2>Lista de Custos</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Data</th>
+                            <th>Valor</th>
+                            <th>Data de Pagamento</th>
+                            <th>PDF</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Os dados serão inseridos aqui -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="custo-secundario.js"></script>
+</body>
+</html>

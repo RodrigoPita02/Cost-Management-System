@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Custos</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+
+    button {
+        padding: 12px;
+        background: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .action-button {
+    margin-right: 8px; /* Ajuste o valor conforme necessário */
+    padding-top: 8px;
+    }
+
+</style>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="#add-cost">Adicionar Custo</a></li>
+                <li><a href="#costs">Custos</a></li>
+                <li><a href="#cost-distribution">Distribuição de Custos</a></li>
+                <li><a href="custo-variavel.html">Custos Variáveis</a></li>
+                <li><a href="manage-descriptions.html">Gerenciar Descrições</a></li>
+                <li><a href="custo-secundario.html">Visão Geral</a></li>
+                <li><a href="pdf-merge.html">Unir PDFs</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Dashboard de Custos</h1>
+                <p>Gerencie seus custos de forma eficiente</p>
+            </header>
+
+            <!-- Adicionar Novo Custo -->
+            <section id="add-cost" class="add-cost">
+                <h2>Adicionar Novo Custo</h2>
+                <form id="custoForm" aria-label="Formulário para adicionar novos custos">
+                    <label for="data">Data:</label>
+                    <input type="date" id="data" name="data" required aria-required="true">
+                    
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo" name="tipo" required aria-required="true">
+                        <!-- As opções serão preenchidas pelo script -->
+                    </select>
+                    
+                    <label for="descricao">Descrição:</label>
+                    <select id="descricao" name="descricao_id" required aria-required="true">
+                        <!-- As opções serão preenchidas pelo script -->
+                    </select>
+                    
+                    <label for="valor">Valor:</label>
+                    <input type="number" id="valor" name="valor" step="0.01" required aria-required="true">
+                    
+                    <label for="tipo_pagamento">Tipo de Pagamento:</label>
+                    <select id="tipo_pagamento" name="tipo_pagamento_id" required aria-required="true">
+                        <!-- As opções serão preenchidas pelo script -->
+                    </select>
+                    
+                    <label for="situacao">Situação:</label>
+                    <select id="situacao" name="situacao_id" required aria-required="true">
+                        <!-- As opções serão preenchidas pelo script -->
+                    </select>
+                    
+                    <label for="data_pagamento">Data de Pagamento:</label>
+                    <input type="date" id="data_pagamento" name="data_pagamento" required aria-required="true">
+                    
+                    <button type="button" onclick="addCusto(event)">Adicionar Custo</button>
+                </form>
+            </section>
+            <br>
+
+            <!-- Visão Geral -->
+            <section id="overview" class="overview">
+                <h2>Visão Geral</h2>
+                <div class="overview-cards">
+                    <div class="card">
+                        <h3>Custos por Pagar</h3>
+                        <p id="pendingCostsCount">0</p>
+                        <button id="pendingCostsButton">Mostrar</button>
+                    </div>
+                    <div class="card">
+                        <h3>Total de Gastos</h3>
+                        <p id="totalGastos">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Custos -->
+            <section id="costs" class="costs">
+                <h2>Custos</h2>       
+                <div class="filters">
+                    <input type="text" id="searchInput" placeholder="Pesquisar..." aria-label="Pesquisar custos">
+                    <select id="searchCategory" aria-label="Filtrar por categoria">
+                        <option value="">Todos os Tipos</option>
+                        <option value="Banco">Banco</option>
+                        <option value="Funcionarios">Funcionários</option>
+                        <option value="Fornecedores">Fornecedores</option>
+                        <option value="Servicos">Serviços</option>
+                        <option value="Estado">Estado</option>
+                    </select>
+                    <input type="month" id="monthInput" aria-label="Pesquisar por mês">
+                    <button id="searchButton">Pesquisar</button>
+                    <button id="showAllButton">Mostrar Todos</button>
+                </div>
+                <div class="table-container">
+                    <table id="custoTable" aria-label="Tabela de custos">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Tipo de Pagamento</th>
+                                <th>Situação</th>
+                                <th>Data de Pagamento</th>
+                                <th>Upload PDF</th>
+                                <th>PDF</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- As linhas da tabela serão preenchidas pelo script -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>            
+
+            <!-- Distribuição dos Custos -->
+            <section id="cost-distribution" class="cost-distribution">
+                <h2>Distribuição dos Custos</h2>
+                <!-- Seletor de mês para o gráfico -->
+                <section>
+                    <div class="month-selector filters">
+                        <label for="monthSelect">Escolha o Mês:</label>
+                        <select id="monthSelect" aria-label="Selecionar mês para o gráfico">
+                            <option value="">Todos</option>
+                            <option value="01">Janeiro</option>
+                            <option value="02">Fevereiro</option>
+                            <option value="03">Março</option>
+                            <option value="04">Abril</option>
+                            <option value="05">Maio</option>
+                            <option value="06">Junho</option>
+                            <option value="07">Julho</option>
+                            <option value="08">Agosto</option>
+                            <option value="09">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                        <button id="updateChartButton">Atualizar Gráfico</button>
+                    </div>
+                </section>
+                <canvas id="costDistributionChart" width="400" height="400"></canvas>
+                <canvas id="costBarChart" width="400" height="400"></canvas>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Descrições</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #3498db;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+button {
+    margin-right: 5px;
+}
+
+</style>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="index.html#add-cost">Adicionar Custo</a></li>
+                <li><a href="index.html#costs">Custos</a></li>
+                <li><a href="index.html#cost-distribution">Distribuição de Custos</a></li>
+                <li><a href="custo-variavel.html">Custos Variáveis</a></li>
+                <li><a href="manage-descriptions.html">Gerenciar Descrições</a></li>
+                <li><a href="custo-secundario.html">Visão Geral</a></li>
+                <li><a href="pdf-merge.html">Unir PDFs</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Gerenciar Descrições</h1>
+                <p>Adicione e gerencie as descrições para tipos de custos</p>
+            </header>
+
+            <!-- Gerenciar Descrições -->
+            <section id="manage-descriptions" class="manage-descriptions">
+                <h2>Adicionar Nova Descrição</h2>
+                <form id="descriptionForm">
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="Banco">Banco</option>
+                        <option value="Fornecedores">Fornecedores</option>
+                        <option value="Funcionarios">Funcionários</option>
+                        <option value="Servicos">Serviços</option>
+                        <option value="Estado">Estado</option>
+                    </select>
+    
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
+    
+                    <button type="button" onclick="addDescription()">Adicionar</button>
+                </form>
+
+                <h2>Lista de Descrições</h2>
+                <table id="descriptionTable">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Nome</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- As linhas da tabela serão preenchidas pelo script -->
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="manage-descriptions.js"></script>
+</body>
+</html>

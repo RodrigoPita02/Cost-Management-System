@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combinar PDFs</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<style>
+    /* Adicione ao seu arquivo styles.css */
+
+.hidden {
+    display: none;
+}
+
+#successMessage {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #4CAF50;
+    background-color: #DFF0D8;
+    color: #3C763D;
+    border-radius: 5px;
+}
+
+#successMessage p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#downloadButton {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#downloadButton:hover {
+    background-color: #45a049;
+}
+
+</style>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="index.html#add-cost">Adicionar Custo</a></li>
+                <li><a href="index.html#costs">Custos</a></li>
+                <li><a href="index.html#cost-distribution">Distribuição de Custos</a></li>
+                <li><a href="custo-variavel.html">Custos Variáveis</a></li>
+                <li><a href="manage-descriptions.html">Gerenciar Descrições</a></li>
+                <li><a href="custo-secundario.html">Visão Geral</a></li>
+                <li><a href="pdf-merge.html">Unir PDFs</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1>Combinar PDFs</h1>
+                <p>Selecione dois arquivos PDF para combiná-los em um só.</p>
+            </header>
+
+            <!-- PDF Merge -->
+            <section id="pdf-merge" class="pdf-merge">
+                <form id="pdfForm">
+                    <label for="pdfFileA">Escolha o primeiro PDF:</label>
+                    <input type="file" id="pdfFileA" accept="application/pdf" required>
+
+                    <label for="pdfFileB">Escolha o segundo PDF:</label>
+                    <input type="file" id="pdfFileB" accept="application/pdf" required>
+
+                    <button type="button" id="mergeButton">Combinar PDFs</button>
+                </form>
+
+                <div id="successMessage" class="hidden">
+                    <p>Os PDFs foram combinados com sucesso!</p>
+                    <button id="downloadButton" class="hidden">Download do PDF Combinado</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="pdf-merge.js"></script>
+</body>
+</html>
