@@ -43,6 +43,16 @@ CREATE TABLE `custo` (
   CONSTRAINT `custo_ibfk_3` FOREIGN KEY (`situacao_id`) REFERENCES `situacao` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `custo`
+--
+
+LOCK TABLES `custo` WRITE;
+/*!40000 ALTER TABLE `custo` DISABLE KEYS */;
+INSERT INTO `custo` VALUES (50,'2024-10-22','Estado',50,50.00,1,2,'2024-10-22',NULL),(51,'2024-11-01','Banco',1,100.00,2,1,'2024-11-01','51_2024-10-22.pdf'),(52,'2024-10-22','Servicos',38,200.00,3,1,'2024-10-22','testepdf.pdf'),(53,'2024-10-29','Funcionarios',8,500.00,3,1,'2024-11-09','6.pdf');
+/*!40000 ALTER TABLE `custo` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -180,6 +190,16 @@ CREATE TABLE `custosecundario` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `custosecundario`
+--
+
+LOCK TABLES `custosecundario` WRITE;
+/*!40000 ALTER TABLE `custosecundario` DISABLE KEYS */;
+INSERT INTO `custosecundario` VALUES (25,'2024-10-08','Combustivel',30.00,'2024-10-08','CV_testepdf.pdf'),(32,'2024-10-22','A.T - Retenção na fonte',50.00,'2024-10-22',NULL),(33,'2024-11-01','CGD',100.00,'2024-11-01','51_2024-10-22.pdf'),(34,'2024-10-22','Almas Industrias',200.00,'2024-10-22','testepdf.pdf'),(35,'2024-10-21','Repsol',30.00,'2024-10-21',NULL),(36,'2024-10-29','Rita Gaspar',500.00,'2024-11-09','6.pdf'),(37,'2024-10-29','Roupa de Criança',15.00,'2024-10-29',NULL);
+/*!40000 ALTER TABLE `custosecundario` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `custovariavel`
 --
 
@@ -202,6 +222,16 @@ CREATE TABLE `custovariavel` (
   CONSTRAINT `custovariavel_ibfk_2` FOREIGN KEY (`situacao_id`) REFERENCES `situacao` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `custovariavel`
+--
+
+LOCK TABLES `custovariavel` WRITE;
+/*!40000 ALTER TABLE `custovariavel` DISABLE KEYS */;
+INSERT INTO `custovariavel` VALUES (11,'2024-10-08','Combustivel',30.00,2,1,'2024-10-08','CV_testepdf.pdf'),(13,'2024-10-21','Repsol',30.00,2,1,'2024-10-21',NULL),(14,'2024-10-29','Roupa de Criança',15.00,2,1,'2024-10-29',NULL);
+/*!40000 ALTER TABLE `custovariavel` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -335,6 +365,16 @@ CREATE TABLE `descricao` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `descricao`
+--
+
+LOCK TABLES `descricao` WRITE;
+/*!40000 ALTER TABLE `descricao` DISABLE KEYS */;
+INSERT INTO `descricao` VALUES (1,'Banco','CGD',1),(2,'Banco','PRIMUS',1),(3,'Banco','BPI',1),(4,'Funcionarios','Lucia Silva',1),(5,'Funcionarios','David Martinho',1),(6,'Funcionarios','Carla Pimenta',1),(7,'Funcionarios','Sonia Campos',1),(8,'Funcionarios','Rita Gaspar',1),(9,'Funcionarios','Margarida Nunes',1),(10,'Funcionarios','Neuza Torres',1),(11,'Funcionarios','Daniela Teixeira',1),(12,'Funcionarios','Gertrudes Peitinho',1),(13,'Funcionarios','Ana Carolina',1),(14,'Funcionarios','Mónica',1),(15,'Funcionarios','Dora Simao',1),(16,'Funcionarios','Beatriz S',1),(17,'Funcionarios','Claudia Oliveira',1),(18,'Fornecedores','Recheio',1),(19,'Fornecedores','Mercadona',1),(20,'Fornecedores','Intermache',1),(21,'Fornecedores','Talho Ant. Cacete',1),(22,'Fornecedores','Hygistar',1),(23,'Fornecedores','Frijobel',1),(24,'Fornecedores','Rf e Cr',1),(25,'Fornecedores','FMH',1),(26,'Fornecedores','A. V. Roldao',1),(27,'Fornecedores','Delta',1),(28,'Fornecedores','MGC',1),(29,'Fornecedores','Farm. Tavares de Matos',1),(30,'Servicos','Mapfre',1),(31,'Servicos','Fidelidade',1),(32,'Servicos','Vodafone',1),(33,'Servicos','Iberdrola',1),(34,'Servicos','CMP',1),(35,'Servicos','Miguel Oliveira',1),(36,'Servicos','Via Verde',1),(37,'Servicos','Ticket',1),(38,'Servicos','Almas Industrias',1),(39,'Servicos','Radius',1),(40,'Servicos','Disporsado',1),(49,'Estado','Seg.Social',1),(50,'Estado','A.T - Retenção na fonte',1),(51,'Estado','A.T - IRS',1),(52,'Estado','A.T - IRC',1),(53,'Estado','A.T - Pagamento por conta',1);
+/*!40000 ALTER TABLE `descricao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `situacao`
 --
 
@@ -349,6 +389,16 @@ CREATE TABLE `situacao` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `situacao`
+--
+
+LOCK TABLES `situacao` WRITE;
+/*!40000 ALTER TABLE `situacao` DISABLE KEYS */;
+INSERT INTO `situacao` VALUES (1,'Pago'),(2,'Por pagar');
+/*!40000 ALTER TABLE `situacao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tipopagamento`
 --
 
@@ -361,6 +411,16 @@ CREATE TABLE `tipopagamento` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tipopagamento`
+--
+
+LOCK TABLES `tipopagamento` WRITE;
+/*!40000 ALTER TABLE `tipopagamento` DISABLE KEYS */;
+INSERT INTO `tipopagamento` VALUES (1,'MB'),(2,'Numerario'),(3,'Transferencia');
+/*!40000 ALTER TABLE `tipopagamento` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping events for database 'centro_de_custos'
@@ -379,4 +439,4 @@ CREATE TABLE `tipopagamento` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-29 18:36:46
+-- Dump completed on 2024-11-25 13:52:14
