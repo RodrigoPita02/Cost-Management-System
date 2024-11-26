@@ -1,21 +1,11 @@
 # Sistema de Gestão de Custos Secundários
 
-Este projeto é uma aplicação web simples para a gestão de custos secundários, permitindo ao utilizador:
+Este projeto é uma aplicação web para a gestão de custos, permitindo ao utilizador:
 
+- Inserir custos principais e secundários.
 - Visualizar todos os custos registados.
-- Filtrar custos por mês.
+- Filtrar informação das tabelas.
 - Fazer o upload e visualização de documentos PDF relacionados com os custos.
-
-## Funcionalidades
-
-1. **Visualização de Custos**:
-   - Lista de custos secundários com detalhes como descrição, valor, data de pagamento, e um link para visualização de documentos PDF.
-
-2. **Pesquisa por Mês**:
-   - Permite ao utilizador pesquisar custos secundários de um mês específico usando uma data no formato `YYYY-MM`.
-
-3. **Upload de PDFs**:
-   - Associar documentos PDF a cada custo secundário.
 
 ## Tecnologias Utilizadas
 
@@ -48,18 +38,22 @@ Este projeto é uma aplicação web simples para a gestão de custos secundário
 3. Configure a base de dados:
     Crie uma base de dados no MySQL.
     Importe o ficheiro schema.sql (localizado na pasta db/) para configurar as tabelas.
+   ```bash
     SOURCE Cost-Management-System/bd/schema.sql;
 
-4. Configure as variáveis de ambiente: Crie um ficheiro .env na raiz do projeto e adicione:
+5. Configure as variáveis de ambiente: Crie um ficheiro .env na raiz do projeto e adicione:
+   ```bash
     DB_HOST=localhost
     DB_USER=seu_usuario
     DB_PASSWORD=sua_senha
     DB_NAME=nome_da_base_de_dados
 
-5. Inicie o servidor:
+7. Inicie o servidor:
+   ```bash
     node server.js
 
-6. Abra o navegador e aceda:
+9. Abra o navegador e aceda:
+    ```bash
     http://localhost:3000
 
 ## Contactos
