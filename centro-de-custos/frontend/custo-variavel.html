@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,6 +71,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
@@ -93,50 +95,62 @@
             </header>
 
             <h2>Adicionar Custo Variável</h2>
-        <form id="custoVariavelForm">
-            <label for="data">Data:</label>
-            <input type="date" id="data" name="data" required>
-            
-            <label for="descricao">Descrição:</label>
-            <input type="text" id="descricao" name="descricao" required>
-            
-            <label for="valor">Valor:</label>
-            <input type="number" id="valor" name="valor" step="0.01" required>
-            
-            <label for="tipo_pagamento">Tipo de Pagamento:</label>
-            <select id="tipo_pagamento" name="tipo_pagamento" required></select>
-            
-            <label for="situacao">Situação:</label>
-            <select id="situacao" name="situacao" required></select>
-            
-            <label for="data_pagamento">Data de Pagamento:</label>
-            <input type="date" id="data_pagamento" name="data_pagamento">
-            
-            <button type="submit">Adicionar</button>
-        </form>
+            <form id="custoVariavelForm">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
 
-        <h2>Lista de Custos Variáveis</h2>
-        <table id="custoVariavelTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Data</th>
-                    <th>Descrição</th>
-                    <th>Valor</th>
-                    <th>Tipo de Pagamento</th>
-                    <th>Situação</th>
-                    <th>Data de Pagamento</th>
-                    <th>Upload PDF</th>
-                    <th>Visualizar PDF</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dados serão inseridos aqui pelo JavaScript -->
-            </tbody>
-        </table>
-    </main>
-    <script src="custo-variavel.js"></script>
+                <label for="descricao">Descrição:</label>
+                <input type="text" id="descricao" name="descricao" required>
+
+                <label for="valor">Valor:</label>
+                <input type="number" id="valor" name="valor" step="0.01" required>
+
+                <label for="tipo_pagamento">Tipo de Pagamento:</label>
+                <select id="tipo_pagamento" name="tipo_pagamento" required></select>
+
+                <label for="situacao">Situação:</label>
+                <select id="situacao" name="situacao" required></select>
+
+                <label for="data_pagamento">Data de Pagamento:</label>
+                <input type="date" id="data_pagamento" name="data_pagamento">
+
+                <button type="submit">Adicionar</button>
+            </form>
+
+            <h2>Pesquisar Custos</h2>
+            <form id="pesquisaForm">
+                <label for="pesquisaDescricao">Descrição:</label>
+                <input type="text" id="pesquisaDescricao" name="descricao">
+            
+                <label for="pesquisaData">Data:</label>
+                <input type="date" id="pesquisaData" name="data">
+            
+                <button type="submit">Pesquisar</button>
+            </form>
+
+            <h2>Lista de Custos Variáveis</h2>
+            <table id="custoVariavelTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Tipo de Pagamento</th>
+                        <th>Situação</th>
+                        <th>Data de Pagamento</th>
+                        <th>Upload PDF</th>
+                        <th>Visualizar PDF</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dados serão inseridos aqui pelo JavaScript -->
+                </tbody>
+            </table>
+        </main>
+        <script src="custo-variavel.js"></script>
     </div>
 </body>
+
 </html>

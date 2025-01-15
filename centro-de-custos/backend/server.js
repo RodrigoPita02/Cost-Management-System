@@ -500,13 +500,30 @@ app.post('/api/custo-variavel', (req, res) => {
     });
 });
 
-// Endpoint para recuperar todos os custos variáveis
+// Endpoint para recuperar todos os custos variáveis com filtros opcionais
 app.get('/api/custo-variavel', (req, res) => {
-    const sql = `SELECT CustoVariavel.*, tipo.descricao AS tipo_pagamento_descricao, situacao.descricao AS situacao_descricao
-                 FROM CustoVariavel
-                 LEFT JOIN TipoPagamento tipo ON CustoVariavel.tipo_pagamento_id = tipo.id
-                 LEFT JOIN Situacao situacao ON CustoVariavel.situacao_id = situacao.id`;
-    db.query(sql, (error, results) => {
+    const { descricao, data } = req.query; // Pegando os filtros da query string
+    let sql = `
+        SELECT CustoVariavel.*, 
+               tipo.descricao AS tipo_pagamento_descricao, 
+               situacao.descricao AS situacao_descricao
+        FROM CustoVariavel
+        LEFT JOIN TipoPagamento tipo ON CustoVariavel.tipo_pagamento_id = tipo.id
+        LEFT JOIN Situacao situacao ON CustoVariavel.situacao_id = situacao.id
+        WHERE 1=1`; // Inicia com uma condição sempre verdadeira para facilitar adições dinâmicas
+
+    let values = [];
+
+    if (descricao) {
+        sql += " AND CustoVariavel.descricao LIKE ?";
+        values.push(`%${descricao}%`);
+    }
+    if (data) {
+        sql += " AND DATE(CustoVariavel.data) = ?";
+        values.push(data);
+    }
+
+    db.query(sql, values, (error, results) => {
         if (error) {
             console.error('Erro ao recuperar dados:', error);
             return res.status(500).json({ error: 'Erro ao recuperar dados.' });

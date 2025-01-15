@@ -1,11 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     populateSelects();
     fetchCustoVariavel(); // Carrega os dados ao iniciar
+
     document.getElementById('custoVariavelForm').addEventListener('submit', function(event) {
         event.preventDefault();
         addCustoVariavel();
     });
+
+    document.getElementById('pesquisaForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita a atualização da página
+        filtrarCustosVariaveis();
+    });
 });
+
+function filtrarCustosVariaveis() {
+    const descricao = document.getElementById('pesquisaDescricao').value.trim();
+    const data = document.getElementById('pesquisaData').value;
+    fetchCustoVariavel(descricao, data);
+}
+
+function limparFiltro() {
+    document.getElementById('pesquisaDescricao').value = '';
+    document.getElementById('pesquisaData').value = '';
+    fetchCustoVariavel(); // Buscar todos os dados novamente
+}
 
 function populateSelects() {
     fetch('/api/descriptions')
@@ -58,14 +76,16 @@ function addCustoVariavel() {
     .catch(error => console.error('Error adding cost:', error));
 }
 
-function fetchCustoVariavel() {
-    fetch('/api/custo-variavel')
+function fetchCustoVariavel(descricao = '', data = '') {
+    let url = `/api/custo-variavel?descricao=${encodeURIComponent(descricao)}&data=${encodeURIComponent(data)}`;
+
+    fetch(url)
         .then(response => {
             if (!response.ok) throw new Error('Erro na resposta do servidor');
             return response.json();
         })
         .then(data => {
-            console.log('Dados recebidos:', data); // Verifique os dados recebidos
+            console.log('Dados recebidos:', data);
             const tableBody = document.querySelector('#custoVariavelTable tbody');
             tableBody.innerHTML = '';
 
@@ -74,12 +94,9 @@ function fetchCustoVariavel() {
                 const dataFormatada = formatDate(item.data);
                 const dataPagamentoFormatada = formatDate(item.data_pagamento);
 
-                // Ajuste o caminho para o PDF
                 const pdfUrl = item.pdf_path ? `/uploads/${item.pdf_path}` : '#';
-                console.log('PDF URL:', pdfUrl); // Verifique se a URL está correta
                 const pdfDisplay = item.pdf_path ? `<a href="${pdfUrl}" target="_blank">${item.pdf_path.split('/').pop()}</a>` : 'Nenhum PDF';
 
-                // Botão de delete
                 const delete_btn = `<button onclick="deleteCustoVariavel(${item.id})">Delete</button>`;
 
                 const row = document.createElement('tr');
@@ -96,12 +113,12 @@ function fetchCustoVariavel() {
                         <button onclick="uploadPDF(${item.id})" class="upload-btn">Upload PDF</button>
                     </td>
                     <td>${pdfDisplay}</td>
-                    <td>${delete_btn}</td> <!-- Adicionado botão de delete -->
+                    <td>${delete_btn}</td>
                 `;
                 tableBody.appendChild(row);
             });
         })
-        .catch(error => console.error('Error fetching variable costs:', error));
+        .catch(error => console.error('Erro ao buscar custos variáveis:', error));
 }
 
 function deleteCustoVariavel(id) {
@@ -115,10 +132,9 @@ function deleteCustoVariavel(id) {
             }
             return response.json();
         })
-        .then(data => {
+        .then(() => {
             alert('Custo apagado com sucesso');
-            // Recarregar a tabela ou remover a linha da tabela
-            location.reload(); // Recarrega a página
+            fetchCustoVariavel(); // Recarregar a tabela sem atualizar a página
         })
         .catch(error => {
             console.error('Erro ao apagar custo:', error);
@@ -143,9 +159,7 @@ function uploadPDF(custoId) {
     if (file) {
         const formData = new FormData();
         formData.append('pdf', file);
-        const uploadButton = fileInput.nextElementSibling;
-        uploadButton.disabled = true; // Desabilita o botão de upload durante o envio
-
+        
         fetch(`/api/custo-variavel/${custoId}/upload-pdf`, {
             method: 'POST',
             body: formData
@@ -154,17 +168,13 @@ function uploadPDF(custoId) {
             if (!response.ok) throw new Error('Erro ao enviar o PDF');
             return response.json();
         })
-        .then(data => {
-            console.log('PDF upload successful:', data);
+        .then(() => {
             alert('PDF enviado com sucesso.');
             fetchCustoVariavel(); // Atualiza a tabela após o upload
         })
         .catch(error => {
             console.error('Error uploading PDF:', error);
             alert('Erro ao enviar o PDF.');
-        })
-        .finally(() => {
-            uploadButton.disabled = false; // Reabilita o botão após o upload
         });
     } else {
         alert('Por favor, selecione um arquivo PDF para enviar.');
