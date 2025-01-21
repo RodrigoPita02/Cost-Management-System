@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault(); // Previne o envio padrão do formulário
         addDescription();
     });
+
+    // Adiciona evento de entrada ao campo de pesquisa
+    const searchInput = document.getElementById('searchDescription');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterDescriptions);
+    }
 });
 
 function fetchDescriptions() {
@@ -99,4 +105,20 @@ function reactivateDescription(id) {
         fetchDescriptions(); // Atualiza a lista de descrições
     })
     .catch(error => console.error('Error reactivating description:', error));
+}
+
+function filterDescriptions() {
+    const searchInput = document.getElementById('searchDescription').value.toLowerCase();
+    const tableRows = document.querySelectorAll('#descriptionTable tbody tr');
+
+    tableRows.forEach(row => {
+        const nameCell = row.querySelector('td:nth-child(2)'); // Segunda coluna é o nome
+        const name = nameCell.textContent.toLowerCase();
+
+        if (name.includes(searchInput)) {
+            row.style.display = ''; // Mostra a linha
+        } else {
+            row.style.display = 'none'; // Oculta a linha
+        }
+    });
 }

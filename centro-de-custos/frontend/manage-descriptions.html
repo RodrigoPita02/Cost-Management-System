@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,75 +9,75 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <style>
-form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
+    form {
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
 
-input[type="text"],
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
 
-button {
-    background-color: #2980b9;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
+    button {
+        background-color: #2980b9;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
 
-button:hover {
-    background-color: #2980b9;
-}
+    button:hover {
+        background-color: #2980b9;
+    }
 
-/* Tabela */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
+    /* Tabela */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
-table th,
-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-}
+    table th,
+    table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
 
-table th {
-    background-color: #3498db;
-    color: white;
-}
+    table th {
+        background-color: #3498db;
+        color: white;
+    }
 
-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
+    table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
 
-table tr:hover {
-    background-color: #f1f1f1;
-}
+    table tr:hover {
+        background-color: #f1f1f1;
+    }
 
-button {
-    margin-right: 5px;
-}
-
+    button {
+        margin-right: 5px;
+    }
 </style>
+
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
@@ -113,11 +114,19 @@ button {
                         <option value="Servicos">Serviços</option>
                         <option value="Estado">Estado</option>
                     </select>
-    
+
                     <label for="nome">Nome:</label>
                     <input type="text" id="nome" name="nome" required>
-    
+
                     <button type="button" onclick="addDescription()">Adicionar</button>
+                </form>
+
+                <h2>Pesquisar Descrições</h2>
+                <form>
+                    <!-- Campo de pesquisa -->
+                    <label for="searchDescription">Pesquisar:</label>
+                    <input type="text" id="searchDescription" placeholder="Digite o nome da descrição..."
+                        oninput="filterDescriptions()">
                 </form>
 
                 <h2>Lista de Descrições</h2>
@@ -140,4 +149,5 @@ button {
 
     <script src="manage-descriptions.js"></script>
 </body>
+
 </html>
