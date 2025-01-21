@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <style>
-
     button {
         padding: 12px;
         background: #007bff;
@@ -25,11 +25,12 @@
     }
 
     .action-button {
-    margin-right: 8px; /* Ajuste o valor conforme necessário */
-    padding-top: 8px;
+        margin-right: 8px;
+        /* Ajuste o valor conforme necessário */
+        padding-top: 8px;
     }
-
 </style>
+
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
@@ -60,33 +61,35 @@
                 <form id="custoForm" aria-label="Formulário para adicionar novos custos">
                     <label for="data">Data:</label>
                     <input type="date" id="data" name="data" required aria-required="true">
-                    
+
                     <label for="tipo">Tipo:</label>
                     <select id="tipo" name="tipo" required aria-required="true">
                         <!-- As opções serão preenchidas pelo script -->
                     </select>
-                    
+
                     <label for="descricao">Descrição:</label>
-                    <select id="descricao" name="descricao_id" required aria-required="true">
-                        <!-- As opções serão preenchidas pelo script -->
-                    </select>
-                    
+                    <input type="text" id="descricao" name="descricao" list="descricaoList" required
+                        aria-required="true" placeholder="Escreva para procurar...">
+                    <datalist id="descricaoList">
+                        <!-- As opções serão preenchidas dinamicamente pelo script -->
+                    </datalist>
+
                     <label for="valor">Valor:</label>
                     <input type="number" id="valor" name="valor" step="0.01" required aria-required="true">
-                    
+
                     <label for="tipo_pagamento">Tipo de Pagamento:</label>
                     <select id="tipo_pagamento" name="tipo_pagamento_id" required aria-required="true">
                         <!-- As opções serão preenchidas pelo script -->
                     </select>
-                    
+
                     <label for="situacao">Situação:</label>
                     <select id="situacao" name="situacao_id" required aria-required="true">
                         <!-- As opções serão preenchidas pelo script -->
                     </select>
-                    
+
                     <label for="data_pagamento">Data de Pagamento:</label>
                     <input type="date" id="data_pagamento" name="data_pagamento" required aria-required="true">
-                    
+
                     <button type="button" onclick="addCusto(event)">Adicionar Custo</button>
                 </form>
             </section>
@@ -110,7 +113,7 @@
 
             <!-- Custos -->
             <section id="costs" class="costs">
-                <h2>Custos</h2>       
+                <h2>Custos</h2>
                 <div class="filters">
                     <input type="text" id="searchInput" placeholder="Pesquisar..." aria-label="Pesquisar custos">
                     <select id="searchCategory" aria-label="Filtrar por categoria">
@@ -147,7 +150,7 @@
                         </tbody>
                     </table>
                 </div>
-            </section>            
+            </section>
 
             <!-- Distribuição dos Custos -->
             <section id="cost-distribution" class="cost-distribution">
@@ -182,4 +185,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

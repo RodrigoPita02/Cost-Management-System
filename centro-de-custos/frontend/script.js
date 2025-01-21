@@ -2,7 +2,7 @@
 let costDistributionChart = null;
 let costBarChart = null;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     populateSelects();
     fetchData();
     fetchPendingCostsCount();
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput').value;
         const searchCategory = document.getElementById('searchCategory').value;
         const monthInput = document.getElementById('month-custo').value;
-    
+
         fetchData(searchInput, searchCategory, monthInput);
     });
 
@@ -24,27 +24,27 @@ document.addEventListener('DOMContentLoaded', function() {
         this.location.reload();
     });
 
-    document.getElementById('pendingCostsButton').addEventListener('click', function() {
+    document.getElementById('pendingCostsButton').addEventListener('click', function () {
         console.log('Botão de custos por pagar clicado');
         fetchData(true);
     });
 
-    document.getElementById('showAllButton').addEventListener('click', function() {
+    document.getElementById('showAllButton').addEventListener('click', function () {
         console.log('Botão Mostrar Todos clicado');
         fetchData();
     });
 
-    document.getElementById('searchButton').addEventListener('click', function() {
+    document.getElementById('searchButton').addEventListener('click', function () {
         console.log('Botão de pesquisa clicado');
         fetchData();
     });
 
-    document.getElementById('searchInput').addEventListener('input', function() {
+    document.getElementById('searchInput').addEventListener('input', function () {
         console.log('Campo de pesquisa alterado');
         fetchData();
     });
 
-    document.getElementById('searchCategory').addEventListener('change', function() {
+    document.getElementById('searchCategory').addEventListener('change', function () {
         console.log('Categoria selecionada alterada');
         fetchData();
     });
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('updateChartButton').addEventListener('click', () => {
         const selectedMonth = document.getElementById('monthSelect').value;
         fetchCostDistribution(selectedMonth);
-    });    
+    });
 });
 
 function fetchPendingCostsCount() {
@@ -86,7 +86,7 @@ function fetchData(filterPending = false) {
     const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
     const searchCategory = document.getElementById('searchCategory').value.trim();
     const monthInput = document.getElementById('monthInput').value.trim(); // Campo para a data/mês
-    
+
     let url = filterPending ? '/api/custos-por-pagar' : '/api/custos';
     const params = new URLSearchParams();
 
@@ -98,7 +98,7 @@ function fetchData(filterPending = false) {
     if (params.toString()) url += '?' + params.toString();
 
     console.log('Fetching data from URL:', url);
-    
+
     fetch(url)
         .then(response => {
             if (!response.ok) throw new Error('Erro na resposta do servidor');
@@ -108,7 +108,7 @@ function fetchData(filterPending = false) {
             console.log('Dados recebidos para custos:', data);
             const tableBody = document.querySelector('#custoTable tbody');
             tableBody.innerHTML = '';
-            
+
             fetch('/api/descriptions')
                 .then(response => {
                     if (!response.ok) throw new Error('Erro na resposta do servidor');
@@ -196,21 +196,21 @@ function updateSituacao(id, situacaoId) {
         },
         body: JSON.stringify({ situacao_id: newSituacaoId }), // Envia o novo ID da situação
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro ao atualizar a situação.');
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert('Situação atualizada com sucesso!');
-        // Recarregar a tabela após a atualização
-        location.reload(); // Recarrega a página
-    })
-    .catch(error => {
-        console.error('Erro ao atualizar situação:', error);
-        alert('Erro ao atualizar a situação.');
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar a situação.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert('Situação atualizada com sucesso!');
+            // Recarregar a tabela após a atualização
+            location.reload(); // Recarrega a página
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar situação:', error);
+            alert('Erro ao atualizar a situação.');
+        });
 }
 
 function deleteCusto(id) {
@@ -218,21 +218,21 @@ function deleteCusto(id) {
         fetch(`/api/custos/${id}`, {
             method: 'DELETE',
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao apagar o custo');
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert('Custo apagado com sucesso');
-            // Recarregar a tabela ou remover a linha da tabela
-            location.reload(); // Recarrega a página
-        })
-        .catch(error => {
-            console.error('Erro ao apagar custo:', error);
-            alert('Erro ao apagar custo: ' + error.message);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao apagar o custo');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Custo apagado com sucesso');
+                // Recarregar a tabela ou remover a linha da tabela
+                location.reload(); // Recarrega a página
+            })
+            .catch(error => {
+                console.error('Erro ao apagar custo:', error);
+                alert('Erro ao apagar custo: ' + error.message);
+            });
     }
 }
 
@@ -259,7 +259,6 @@ function populateSelects() {
                 throw new Error('Formato de dados inesperado: data não é um objeto');
             }
 
-            // Certifique-se de que data contém os campos que você espera
             const { descricao = [], tipoPagamento = [], situacao = [] } = data;
 
             if (!Array.isArray(descricao) || !Array.isArray(tipoPagamento) || !Array.isArray(situacao)) {
@@ -267,13 +266,14 @@ function populateSelects() {
             }
 
             const tipoSelect = document.getElementById('tipo');
-            const descricaoSelect = document.getElementById('descricao');
+            const descricaoInput = document.getElementById('descricao');
+            const descricaoDatalist = document.getElementById('descricaoList'); // Para autocomplete
             const tipoPagamentoSelect = document.getElementById('tipo_pagamento');
             const situacaoSelect = document.getElementById('situacao');
 
-            // Limpar os selects antes de adicionar novas opções
+            // Limpar selects e datalist antes de adicionar novas opções
             tipoSelect.innerHTML = '';
-            descricaoSelect.innerHTML = '';
+            descricaoDatalist.innerHTML = ''; // Para o datalist
             tipoPagamentoSelect.innerHTML = '';
             situacaoSelect.innerHTML = '';
 
@@ -297,36 +297,39 @@ function populateSelects() {
                 tipoSelect.add(new Option(tipo, tipo));
             });
 
-            // Atualizar opções de descrição com base no tipo selecionado
-            tipoSelect.addEventListener('change', function() {
-                descricaoSelect.innerHTML = '';
+            // Atualizar opções de descrição no datalist com base no tipo selecionado
+            tipoSelect.addEventListener('change', function () {
+                descricaoDatalist.innerHTML = '';
                 const tipo = this.value;
 
                 // Filtrar descrições ativas e do tipo selecionado
+                // Preencher o datalist de descrições com IDs
                 descricao
-                    .filter(item => item.tipo === tipo && item.ativo)  // Filtra apenas descrições ativas
+                    .filter(item => item.tipo === tipo && item.ativo) // Filtra descrições ativas do tipo selecionado
                     .forEach(item => {
                         if (item.nome && item.id) {
-                            descricaoSelect.add(new Option(item.nome, item.id));
+                            const option = document.createElement('option');
+                            option.value = item.nome; // Texto exibido no datalist
+                            option.setAttribute('data-id', item.id); // ID associado
+                            descricaoDatalist.appendChild(option);
                         }
                     });
+
             });
 
+            // Acionar evento inicial para preencher as opções
             tipoSelect.dispatchEvent(new Event('change'));
-            
+
             // Definir valores predefinidos, se necessário
-            const defaultTipo = 'Banco'; // exemplo de valor padrão
+            const defaultTipo = 'Banco'; // Exemplo de valor padrão
             tipoSelect.value = defaultTipo;
-            
-            // Verificar se a descrição padrão existe antes de definir o valor
-            const defaultDescricao = descricao.find(item => item.tipo === defaultTipo && item.ativo)?.id || '';
-            descricaoSelect.value = defaultDescricao;
+            tipoSelect.dispatchEvent(new Event('change'));
 
             // Verificar se os arrays existem e têm pelo menos um item antes de definir os valores
             tipoPagamentoSelect.value = (tipoPagamento[0]?.id) || ''; // Ajuste conforme necessário
             situacaoSelect.value = (situacao[0]?.id) || ''; // Ajuste conforme necessário
         })
-        .catch(error => console.error('Error fetching descriptions:', error));
+        .catch(error => console.error('Erro ao buscar descrições:', error));
 }
 
 function addCusto(event) {
@@ -334,21 +337,38 @@ function addCusto(event) {
 
     const form = document.getElementById('custoForm');
     const formData = new FormData(form);
+
+    // Captura o valor da descrição e tenta encontrar o ID correspondente
+    const descricaoInput = document.getElementById('descricao'); // Campo de entrada
+    const descricaoSelecionada = descricaoInput.value.trim(); // Valor digitado ou selecionado
+    const descricaoList = Array.from(document.getElementById('descricaoList').options); // Opções do datalist
+
+    // Buscar o ID correspondente ao valor digitado
+    const descricaoId = descricaoList.find(option => option.value.trim() === descricaoSelecionada)?.getAttribute('data-id');
+
+    if (!descricaoId) {
+        alert('Por favor, selecione uma descrição válida da lista.');
+        return;
+    }
+
+    // Captura os valores do formulário
     const data = {
         data: formData.get('data'),
         tipo: formData.get('tipo'),
-        descricao_id: formData.get('descricao_id'),
+        descricao_id: descricaoId, // Usa o ID encontrado
         valor: parseFloat(formData.get('valor')),
         tipo_pagamento_id: formData.get('tipo_pagamento_id'),
         situacao_id: formData.get('situacao_id'),
         data_pagamento: formData.get('data_pagamento')
     };
 
-    if (!data.data || !data.tipo || !data.descricao_id || isNaN(data.valor) || !data.tipo_pagamento_id || !data.situacao_id || !data.data_pagamento) {
-        alert('Por favor, preencha todos os campos.');
+    // Verifica se todos os campos estão preenchidos
+    if (!data.data || !data.tipo || isNaN(data.valor) || !data.tipo_pagamento_id || !data.situacao_id || !data.data_pagamento) {
+        alert('Por favor, preencha todos os campos corretamente.');
         return;
     }
 
+    // Envia os dados para o servidor
     fetch('/api/custos', {
         method: 'POST',
         headers: {
@@ -366,7 +386,7 @@ function addCusto(event) {
         fetchCostDistribution();
         form.reset();
     })
-    .catch(error => console.error('Error adding cost:', error));
+    .catch(error => console.error('Erro ao adicionar custo:', error));
 }
 
 function fetchCostDistribution(month = '') {
@@ -390,7 +410,7 @@ function fetchCostDistribution(month = '') {
 
 function renderChart(data) {
     const ctx = document.getElementById('costDistributionChart').getContext('2d');
-    
+
     // Destroi o gráfico anterior, se existir, para evitar sobreposição
     if (costDistributionChart) {
         costDistributionChart.destroy();
@@ -523,22 +543,22 @@ function uploadPDF(custoId) {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            if (!response.ok) throw new Error('Erro ao enviar o PDF');
-            return response.json();
-        })
-        .then(data => {
-            console.log('PDF upload successful:', data);
-            alert('PDF enviado com sucesso.');
-            fetchData();
-        })
-        .catch(error => {
-            console.error('Error uploading PDF:', error);
-            alert('Erro ao enviar o PDF.');
-        })
-        .finally(() => {
-            uploadButton.disabled = false; // Reabilita o botão após o upload
-        });
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao enviar o PDF');
+                return response.json();
+            })
+            .then(data => {
+                console.log('PDF upload successful:', data);
+                alert('PDF enviado com sucesso.');
+                fetchData();
+            })
+            .catch(error => {
+                console.error('Error uploading PDF:', error);
+                alert('Erro ao enviar o PDF.');
+            })
+            .finally(() => {
+                uploadButton.disabled = false; // Reabilita o botão após o upload
+            });
     } else {
         alert('Por favor, selecione um arquivo PDF para enviar.');
     }
