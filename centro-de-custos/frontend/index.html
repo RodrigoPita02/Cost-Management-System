@@ -105,6 +105,13 @@
                         <button id="pendingCostsButton">Mostrar</button>
                     </div>
                     <div class="card">
+                        <div class="select-container">
+                            <select id="yearSelect" onchange="fetchTotalGastos()">
+                                <option value="">Total Conjunto</option>
+                                <!-- Os anos podem ser preenchidos dinamicamente -->
+                            </select>
+                        </div>
+                        <br>
                         <h3>Total de Gastos</h3>
                         <p id="totalGastos">0</p>
                     </div>

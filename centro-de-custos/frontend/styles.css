@@ -319,6 +319,52 @@ form button:hover {
   background: #0056b3;
 }
 
+/* Estilização do select (dropdown) */
+.select-container {
+  position: relative;
+  display: inline-block;
+  width: 200px; /* Ajuste conforme necessário */
+}
+
+.select-container select {
+  appearance: none; /* Remove a aparência padrão */
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #3498db;
+  border-radius: 5px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* Ícone de seta personalizada */
+.select-container::after {
+  content: "▼"; /* Ícone de seta */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #3498db;
+  text-align: center;
+  pointer-events: none; /* Evita clique na seta */
+}
+
+/* Efeito hover */
+.select-container select:hover {
+  border-color: #2980b9;
+}
+
+/* Efeito ao focar */
+.select-container select:focus {
+  outline: none;
+  border-color: #2ecc71;
+}
+
+
 /* Responsividade para telas menores */
 @media (max-width: 1024px) {
   .dashboard {

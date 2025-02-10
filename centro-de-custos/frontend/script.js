@@ -4,6 +4,7 @@ let costBarChart = null;
 
 document.addEventListener('DOMContentLoaded', function () {
     populateSelects();
+    populateYearSelect();
     fetchData();
     fetchPendingCostsCount();
     fetchTotalGastos();
@@ -68,16 +69,32 @@ function fetchPendingCostsCount() {
         .catch(error => console.error('Error fetching pending costs count:', error));
 }
 
+function populateYearSelect() {
+    const select = document.getElementById('yearSelect');
+    const currentYear = new Date().getFullYear();
+
+    for (let year = currentYear; year >= currentYear - 5; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        select.appendChild(option);
+    }
+
+    select.value = currentYear; // Define o ano atual como padrão
+}
+
 function fetchTotalGastos() {
-    fetch('/api/total-gastos')
+    const selectedYear = document.getElementById('yearSelect').value;
+
+    fetch(`/api/total-gastos?year=${selectedYear}`)
         .then(response => {
             if (!response.ok) throw new Error('Erro na resposta do servidor');
             return response.json();
         })
         .then(data => {
             const totalGastosElement = document.getElementById('totalGastos');
-            const totalValue = typeof data.total === 'number' ? data.total : 0; // Verifica se é um número
-            totalGastosElement.textContent = `€ ${totalValue.toFixed(2)}`; // Formata para duas casas decimais
+            const totalValue = typeof data.total === 'number' ? data.total : 0;
+            totalGastosElement.textContent = `€ ${totalValue.toFixed(2)}`;
         })
         .catch(error => console.error('Error fetching total gastos:', error));
 }
@@ -384,6 +401,8 @@ function addCusto(event) {
         fetchData();
         fetchPendingCostsCount();
         fetchCostDistribution();
+        populateYearSelect();
+        fetchTotalGastos();
         form.reset();
     })
     .catch(error => console.error('Erro ao adicionar custo:', error));

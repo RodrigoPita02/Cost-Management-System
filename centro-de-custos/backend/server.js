@@ -88,6 +88,7 @@ app.get('/api/custos', (req, res) => {
         LEFT JOIN Descricao d ON c.descricao_id = d.id
         LEFT JOIN TipoPagamento tp ON c.tipo_pagamento_id = tp.id
         LEFT JOIN Situacao sit ON c.situacao_id = sit.id
+        ORDER BY c.id DESC
     `;
 
     const filters = [];
@@ -212,7 +213,7 @@ app.get('/api/custos-por-pagar', (req, res) => {
         LEFT JOIN Descricao d ON c.descricao_id = d.id
         LEFT JOIN TipoPagamento tp ON c.tipo_pagamento_id = tp.id
         LEFT JOIN Situacao sit ON c.situacao_id = sit.id
-        WHERE sit.descricao = 'Por pagar';
+        WHERE sit.descricao = 'Por pagar' ORDER BY c.id DESC;
     `;
     db.query(sql, (err, results) => {
         if (err) {
@@ -250,15 +251,25 @@ app.get('/api/custos-por-pagar-count', (req, res) => {
     });
 });
 
-// Endpoint para obter o total de gastos
+// Endpoint para obter o total de gastos por ano
 app.get('/api/total-gastos', (req, res) => {
-    const sql = `
+    const year = req.query.year; // Obtém o ano da query string
+
+    // Query base para filtrar gastos pagos
+    let sql = `
         SELECT SUM(valor) AS total
         FROM custo
-        WHERE situacao_id = 1; -- Supondo que 1 representa os custos que estão pagos
+        WHERE situacao_id = 1
     `;
 
-    db.query(sql, (err, results) => {
+    // Se o usuário escolheu um ano, filtramos por esse ano
+    const params = [];
+    if (year) {
+        sql += ` AND YEAR(data) = ?`; // Supondo que há um campo "data" na tabela "custo"
+        params.push(year);
+    }
+
+    db.query(sql, params, (err, results) => {
         if (err) {
             console.error('Error fetching total gastos:', err);
             res.status(500).json({ error: 'Error fetching total gastos' });
@@ -266,10 +277,9 @@ app.get('/api/total-gastos', (req, res) => {
         }
 
         const total = results[0]?.total || 0; // Se não houver resultados, define total como 0
-        res.json({ total: total ? parseFloat(total) : 0 }); // Garantindo que seja um número
+        res.json({ total: parseFloat(total) }); // Garantindo que seja um número
     });
 });
-
 
 // Endpoint para obter todas as descrições, incluindo desativadas
 app.get('/api/descriptions', (req, res) => {
@@ -510,7 +520,7 @@ app.get('/api/custo-variavel', (req, res) => {
         FROM CustoVariavel
         LEFT JOIN TipoPagamento tipo ON CustoVariavel.tipo_pagamento_id = tipo.id
         LEFT JOIN Situacao situacao ON CustoVariavel.situacao_id = situacao.id
-        WHERE 1=1`; // Inicia com uma condição sempre verdadeira para facilitar adições dinâmicas
+        WHERE 1=1 ORDER BY id DESC`; // Inicia com uma condição sempre verdadeira para facilitar adições dinâmicas
 
     let values = [];
 
@@ -534,7 +544,7 @@ app.get('/api/custo-variavel', (req, res) => {
 
 // Endpoint para obter os dados da tabela CustoSecundario
 app.get('/api/custo-secundario', (req, res) => {
-    const sql = 'SELECT * FROM CustoSecundario';
+    const sql = 'SELECT * FROM CustoSecundario ORDER BY id DESC';
 
     db.query(sql, (error, results) => {
         if (error) {
