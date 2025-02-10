@@ -132,27 +132,53 @@ function exportTableToPDF() {
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            let tableData = [];
             const headers = ['ID', 'Descrição', 'Data', 'Valor', 'Data de Pagamento', 'PDF'];
+            let tableData = [];
 
-            tableData.push(headers);
-
+            // Preparar os dados para a tabela
             data.forEach(item => {
+                let pdfFileName = ''; // Nome real do arquivo
+                let pdfUrl = '';
+
+                if (item.pdf_path) {
+                    pdfFileName = item.pdf_path.split('/').pop(); // Extrai o nome do arquivo
+                    pdfUrl = `http://localhost:3000/uploads/${item.pdf_path}`;
+                }
+
                 tableData.push([
                     item.id,
                     item.descricao,
                     item.data.split('T')[0],
                     `€ ${item.valor}`,
                     item.data_pagamento ? item.data_pagamento.split('T')[0] : 'N/A',
-                    item.pdf_path ? `Ver PDF` : 'Nenhum PDF'
+                    pdfUrl ? { name: pdfFileName, url: pdfUrl } : '' // Guarda nome e URL juntos
                 ]);
             });
 
+            // Criar a tabela no PDF com alinhamento central
             doc.autoTable({
                 head: [headers],
-                body: tableData.slice(1),
+                body: tableData.map(row => row.map((cell, colIndex) => (colIndex === 5 ? '' : cell))), // Mantém a célula vazia antes do link
                 startY: 10,
-                styles: { fontSize: 10, cellPadding: 3 }
+                styles: { fontSize: 10, cellPadding: 3, halign: 'center' }, // Alinha todo o texto ao centro
+                headStyles: { halign: 'center' }, // Centraliza os cabeçalhos
+                columnStyles: {
+                    5: { halign: 'center' } // Centraliza especificamente a coluna de PDFs
+                },
+                didDrawCell: function (data) {
+                    if (data.column.index === 5) { // Coluna do PDF
+                        const rowIndex = data.row.index;
+                        const pdfInfo = tableData[rowIndex][5]; // Obtém o nome e link do PDF
+
+                        if (typeof pdfInfo === 'object' && pdfInfo.url) {
+                            doc.setTextColor(0, 0, 255); // Azul para links
+                            const textWidth = doc.getTextWidth(pdfInfo.name);
+                            const xCentered = data.cell.x + (data.cell.width - textWidth) / 2; // Calcula a posição central
+                            doc.textWithLink(pdfInfo.name, xCentered, data.cell.y + 4, { url: pdfInfo.url }); // Exibe o nome real do arquivo no centro
+                            doc.setTextColor(0, 0, 0); // Resetar cor do texto
+                        }
+                    }
+                }
             });
 
             doc.save(`custos-${selectedYear}.pdf`);
