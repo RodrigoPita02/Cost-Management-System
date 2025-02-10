@@ -542,55 +542,31 @@ app.get('/api/custo-variavel', (req, res) => {
     });
 });
 
-// Endpoint para obter os dados da tabela CustoSecundario
+// Endpoint para obter os dados da tabela CustoSecundario com filtros opcionais
 app.get('/api/custo-secundario', (req, res) => {
-    const sql = 'SELECT * FROM CustoSecundario ORDER BY id DESC';
+    const { year, month } = req.query;
 
-    db.query(sql, (error, results) => {
-        if (error) {
-            console.error('Erro ao obter dados da tabela CustoSecundario:', error);
-            return res.status(500).json({ error: 'Erro ao obter dados.' });
-        }
-        res.json(results);
-    });
-});
+    let sql = 'SELECT * FROM CustoSecundario';
+    let params = [];
 
-// Endpoint para pesquisar por custo secundario pela data
-app.get('/api/custo-secundario', (req, res) => {
-    const month = req.query.month; // Mês no formato YYYY-MM
-    const year = req.query.year; // Ano no formato YYYY
-
-    if (!month || !year) {
-        return res.status(400).json({ error: 'Ano ou mês não fornecido.' });
+    if (year && month) {
+        // Filtro por ano e mês
+        sql += ' WHERE YEAR(data) = ? AND MONTH(data) = ?';
+        params.push(year, month);
+    } else if (year) {
+        // Filtro apenas por ano
+        sql += ' WHERE YEAR(data) = ?';
+        params.push(year);
     }
 
-    console.log("Ano e mês selecionados no servidor:", year, month);
+    sql += ' ORDER BY id DESC';
 
-    // Extrair o primeiro dia do mês e o último dia do mês
-    const startDate = new Date(`${year}-${month}-01T00:00:00Z`);
-    const endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + 1); // Incrementa para o próximo mês
-    endDate.setDate(0); // Definir para o último dia do mês anterior
-
-    // Formatar as datas para MySQL no formato YYYY-MM-DD
-    const startDateFormatted = startDate.toISOString().slice(0, 10);
-    const endDateFormatted = endDate.toISOString().slice(0, 10);
-
-    console.log("Data inicial:", startDateFormatted, "Data final:", endDateFormatted);
-
-    // Modificar a query SQL para usar o intervalo de datas
-    const sql = `
-        SELECT * FROM CustoSecundario
-        WHERE DATE(data) BETWEEN ? AND ?
-    `;
-
-    db.query(sql, [startDateFormatted, endDateFormatted], (error, results) => {
+    db.query(sql, params, (error, results) => {
         if (error) {
             console.error('Erro ao buscar custos secundários:', error);
             return res.status(500).json({ error: 'Erro no servidor.' });
         }
 
-        console.log("Resultados filtrados:", results);
         res.json(results);
     });
 });

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,24 +11,33 @@
 </head>
 <style>
     .button-container {
-        display: flex; /* Usa flexbox para o layout */
-        gap: 10px; /* Espaço entre os botões */
+        display: flex;
+        /* Usa flexbox para o layout */
+        gap: 10px;
+        /* Espaço entre os botões */
     }
 
     .button-container button {
-        padding: 10px 20px; /* Adiciona algum espaçamento interno */
-        border: none; /* Remove a borda padrão */
-        border-radius: 5px; /* Arredonda os cantos dos botões */
-        background-color: #007BFF; /* Cor de fundo do botão */
-        color: #fff; /* Cor do texto */
-        cursor: pointer; /* Mostra um cursor de mão ao passar sobre o botão */
+        padding: 10px 20px;
+        /* Adiciona algum espaçamento interno */
+        border: none;
+        /* Remove a borda padrão */
+        border-radius: 5px;
+        /* Arredonda os cantos dos botões */
+        background-color: #007BFF;
+        /* Cor de fundo do botão */
+        color: #fff;
+        /* Cor do texto */
+        cursor: pointer;
+        /* Mostra um cursor de mão ao passar sobre o botão */
     }
 
     .button-container button:hover {
-        background-color: #0056b3; /* Cor de fundo ao passar o mouse */
+        background-color: #0056b3;
+        /* Cor de fundo ao passar o mouse */
     }
-
 </style>
+
 <body>
     <div class="dashboard">
         <!-- Sidebar -->
@@ -59,12 +69,17 @@
                 <div class="button-container">
                     <button type="button" onclick="handleSearch()">Pesquisar</button>
                     <button type="button" onclick="showAllData()">Mostrar Todos</button>
-                </div>                
+                </div>
             </form>
 
             <br>
-            <form id="filterForm">
-                <button onclick="exportTableToPDF()">Exportar Tabela para PDF</button>
+            <h2>Exportar por Ano</h2>
+            <form id="exportForm">
+                <label for="yearSelect">Selecione o Ano:</label>
+                <select id="yearSelect">
+                    <option value="">Ano...</option>
+                </select>
+                <button type="button" onclick="exportTableToPDF()">Exportar Tabela para PDF</button>
             </form>
             <br>
 
@@ -92,4 +107,5 @@
 
     <script src="custo-secundario.js"></script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadAllData(); // Carregar todos os dados ao iniciar a página
+    populateYearSelect();
     const searchButton = document.querySelector('button[type="button"]');
     const showAllButton = document.querySelector('button:nth-of-type(2)'); // Assume que o segundo botão é o "Mostrar Todos"
     const monthInput = document.getElementById('month');
@@ -11,6 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Elemento(s) não encontrado(s): searchButton, showAllButton ou monthInput.');
     }
 });
+
+function populateYearSelect() {
+    const yearSelect = document.getElementById('yearSelect');
+    const currentYear = new Date().getFullYear();
+    
+    for (let i = currentYear; i >= currentYear - 10; i--) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        yearSelect.appendChild(option);
+    }
+}
 
 function showAllData() {
     loadAllData(); // Recarregar todos os dados
@@ -107,40 +120,42 @@ function loadAllData() {
 }
 
 function exportTableToPDF() {
-    const { jsPDF } = window.jspdf; // Acessa o jsPDF
-    const doc = new jsPDF();
-    
-    let tableData = [];
-    const headers = [];
+    const selectedYear = document.getElementById('yearSelect').value;
 
-    // Pegar as cabeçalhas da tabela
-    document.querySelectorAll('table thead tr th').forEach(th => {
-        headers.push(th.innerText);
-    });
+    fetch(`/api/custo-secundario?year=${selectedYear}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                alert(`Nenhum dado encontrado para o ano ${selectedYear}`);
+                return;
+            }
 
-    tableData.push(headers); // Adicionar cabeçalhas
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let tableData = [];
+            const headers = ['ID', 'Descrição', 'Data', 'Valor', 'Data de Pagamento', 'PDF'];
 
-    // Pegar os dados da tabela atualmente exibidos no `table-body`
-    document.querySelectorAll('#table-body tr').forEach(row => {
-        const rowData = [];
-        row.querySelectorAll('td').forEach(td => {
-            rowData.push(td.innerText); // Pega o texto de cada célula
-        });
-        tableData.push(rowData);
-    });
+            tableData.push(headers);
 
-    // Adicionar os dados ao PDF
-    doc.autoTable({
-        head: [headers],
-        body: tableData.slice(1), // O primeiro é o cabeçalho
-        startY: 10,
-        styles: {
-            fontSize: 10,
-            cellPadding: 3,
-        },
-    });
+            data.forEach(item => {
+                tableData.push([
+                    item.id,
+                    item.descricao,
+                    item.data.split('T')[0],
+                    `€ ${item.valor}`,
+                    item.data_pagamento ? item.data_pagamento.split('T')[0] : 'N/A',
+                    item.pdf_path ? `Ver PDF` : 'Nenhum PDF'
+                ]);
+            });
 
-    // Guardar o PDF com o nome 'custos-mes-selecionado.pdf'
-    doc.save('custos-mes-selecionado.pdf');
+            doc.autoTable({
+                head: [headers],
+                body: tableData.slice(1),
+                startY: 10,
+                styles: { fontSize: 10, cellPadding: 3 }
+            });
+
+            doc.save(`custos-${selectedYear}.pdf`);
+        })
+        .catch(error => console.error('Erro ao buscar custos:', error));
 }
-
