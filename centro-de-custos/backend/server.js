@@ -545,21 +545,20 @@ app.get('/api/custo-variavel', (req, res) => {
 // Endpoint para obter os dados da tabela CustoSecundario com filtros opcionais
 app.get('/api/custo-secundario', (req, res) => {
     const { year, month } = req.query;
-
     let sql = 'SELECT * FROM CustoSecundario';
     let params = [];
 
-    if (year && month) {
-        // Filtro por ano e mês
-        sql += ' WHERE YEAR(data) = ? AND MONTH(data) = ?';
-        params.push(year, month);
-    } else if (year) {
-        // Filtro apenas por ano
+    if (year) {
         sql += ' WHERE YEAR(data) = ?';
         params.push(year);
+
+        if (month) {
+            sql += ' AND MONTH(data) = ?';
+            params.push(month);
+        }
     }
 
-    sql += ' ORDER BY id DESC';
+    sql += ' ORDER BY data DESC'; // Ordena pelos mais recentes
 
     db.query(sql, params, (error, results) => {
         if (error) {

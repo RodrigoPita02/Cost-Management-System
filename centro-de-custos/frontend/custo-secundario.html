@@ -73,12 +73,30 @@
             </form>
 
             <br>
-            <h2>Exportar por Ano</h2>
+            <h2>Exportar por Ano/Mês</h2>
             <form id="exportForm">
                 <label for="yearSelect">Selecione o Ano:</label>
                 <select id="yearSelect">
                     <option value="">Ano...</option>
                 </select>
+
+                <label for="monthSelect">Selecione o Mês:</label>
+                <select id="monthSelect">
+                    <option value="">Todos</option>
+                    <option value="01">Janeiro</option>
+                    <option value="02">Fevereiro</option>
+                    <option value="03">Março</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Maio</option>
+                    <option value="06">Junho</option>
+                    <option value="07">Julho</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+
                 <button type="button" onclick="exportTableToPDF()">Exportar Tabela para PDF</button>
             </form>
             <br>
