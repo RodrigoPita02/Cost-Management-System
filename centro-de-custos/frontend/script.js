@@ -84,34 +84,46 @@ function populateYearSelect() {
 }
 
 function fetchTotalGastos() {
-    const selectedYear = document.getElementById('yearSelect').value;
+    const year = document.getElementById('yearSelect').value;
+    let url = '/api/total-gastos';
 
-    fetch(`/api/total-gastos?year=${selectedYear}`)
+    if (year) {
+        url += `?year=${year}`;
+    }
+
+    console.log('Fetching total gastos from URL:', url);
+
+    fetch(url)
         .then(response => {
-            if (!response.ok) throw new Error('Erro na resposta do servidor');
+            if (!response.ok) {
+                throw new Error('Erro na resposta do servidor');
+            }
             return response.json();
         })
         .then(data => {
-            const totalGastosElement = document.getElementById('totalGastos');
-            const totalValue = typeof data.total === 'number' ? data.total : 0;
-            totalGastosElement.textContent = `€ ${totalValue.toFixed(2)}`;
+            console.log('Total de gastos recebido:', data);
+            document.getElementById('totalGastos').textContent = `${data.total || 0} €`;
+
+            // Após obter os gastos totais, atualiza a tabela com os custos do ano selecionado
+            fetchData();
         })
-        .catch(error => console.error('Error fetching total gastos:', error));
+        .catch(error => console.error('Erro ao buscar total de gastos:', error));
 }
 
 function fetchData(filterPending = false) {
     const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
     const searchCategory = document.getElementById('searchCategory').value.trim();
-    const monthInput = document.getElementById('monthInput').value.trim(); // Campo para a data/mês
+    const monthInput = document.getElementById('monthInput').value.trim();
+    const yearInput = document.getElementById('yearSelect').value.trim(); // Captura o ano
 
     let url = filterPending ? '/api/custos-por-pagar' : '/api/custos';
     const params = new URLSearchParams();
 
     if (searchInput) params.append('search', searchInput);
     if (searchCategory) params.append('category', searchCategory);
-    if (monthInput) params.append('month', monthInput); // Adiciona o filtro de mês
+    if (monthInput) params.append('month', monthInput);
+    if (yearInput) params.append('year', yearInput); // Adiciona o filtro de ano
 
-    // Se houver parâmetros, adiciona-os à URL
     if (params.toString()) url += '?' + params.toString();
 
     console.log('Fetching data from URL:', url);
@@ -133,14 +145,11 @@ function fetchData(filterPending = false) {
                 })
                 .then(descriptions => {
                     console.log('Dados recebidos para descrições:', descriptions);
-
                     let activeDescriptions = new Set();
 
                     if (Array.isArray(descriptions)) {
-                        // Se for um array
                         activeDescriptions = new Set(descriptions.filter(desc => desc.ativo).map(desc => desc.id));
                     } else if (typeof descriptions === 'object' && descriptions !== null) {
-                        // Se for um objeto, verifique se contém a chave que poderia armazenar as descrições
                         for (const key in descriptions) {
                             if (Array.isArray(descriptions[key])) {
                                 activeDescriptions = new Set(descriptions[key].filter(desc => desc.ativo).map(desc => desc.id));
@@ -158,7 +167,6 @@ function fetchData(filterPending = false) {
         })
         .catch(error => console.error('Error fetching costs:', error));
 }
-
 
 function populateTable(data, activeDescriptions = new Set()) {
     const tableBody = document.querySelector('#custoTable tbody');

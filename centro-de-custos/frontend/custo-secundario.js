@@ -97,7 +97,13 @@ function populateCustoSecundarioTable(data) {
             <td>${item.data.split('T')[0]}</td>
             <td>€ ${item.valor}</td>
             <td>${item.data_pagamento.split('T')[0]}</td>
-            <td>${item.pdf_path ? `<a href="/uploads/${item.pdf_path}" target="_blank">${item.pdf_path.split('/').pop()}</a>` : 'Nenhum PDF'}</td>
+            <td>
+                ${
+                    item.pdf_path 
+                        ? `<a href="/uploads/${item.pdf_path}" target="_blank">${item.pdf_path.split('/').pop()}</a>` 
+                        : 'Nenhum PDF'
+                }
+            </td>
         `;
         tableBody.appendChild(row);
     });
@@ -119,9 +125,14 @@ function loadAllData() {
         .catch(error => console.error('Erro ao carregar dados:', error));
 }
 
-function exportTableToPDF() {
+async function exportTableToPDF() {
     const selectedYear = document.getElementById('yearSelect').value;
-    const selectedMonth = document.getElementById('monthSelect').value; // Novo filtro por mês
+    const selectedMonth = document.getElementById('monthSelect').value;
+
+    if (!selectedYear) {
+        alert("Selecione um ano antes de exportar.");
+        return;
+    }
 
     let apiUrl = `/api/custo-secundario?year=${selectedYear}`;
     if (selectedMonth) {
@@ -130,7 +141,7 @@ function exportTableToPDF() {
 
     fetch(apiUrl)
         .then(response => response.json())
-        .then(data => {
+        .then(async (data) => {
             if (data.length === 0) {
                 alert(`Nenhum dado encontrado para ${selectedMonth ? `o mês ${selectedMonth} de` : ''} ${selectedYear}`);
                 return;
@@ -140,53 +151,67 @@ function exportTableToPDF() {
             const doc = new jsPDF();
             const headers = ['ID', 'Descrição', 'Data', 'Valor', 'Data de Pagamento', 'PDF'];
             let tableData = [];
+            let pdfPaths = [];
 
-            // Preparar os dados para a tabela
             data.forEach(item => {
-                let pdfFileName = '';
-                let pdfUrl = '';
-
-                if (item.pdf_path) {
-                    pdfFileName = item.pdf_path.split('/').pop(); // Obtém o nome do arquivo
-                    pdfUrl = `http://localhost:3000/uploads/${item.pdf_path}`;
-                }
-
                 tableData.push([
                     item.id,
                     item.descricao,
                     item.data.split('T')[0],
                     `€ ${item.valor}`,
                     item.data_pagamento ? item.data_pagamento.split('T')[0] : 'N/A',
-                    pdfUrl ? { name: pdfFileName, url: pdfUrl } : '' // Evita inserir o nome do arquivo na tabela
+                    item.pdf_path ? item.pdf_path : 'Nenhum PDF'
                 ]);
-            });
 
-            // Criar a tabela no PDF com alinhamento central
-            doc.autoTable({
-                head: [headers],
-                body: tableData.map(row => row.map((cell, colIndex) => (colIndex === 5 ? '' : cell))), // Mantém a célula do PDF vazia antes de inserir os links
-                startY: 10,
-                styles: { fontSize: 10, cellPadding: 3, halign: 'center' },
-                headStyles: { halign: 'center' },
-                columnStyles: { 5: { halign: 'center' } }, // Centraliza a coluna do PDF
-                didDrawCell: function (data) {
-                    if (data.section === 'body' && data.column.index === 5) { // Certifica-se de que não está no cabeçalho
-                        const rowIndex = data.row.index;
-                        const pdfInfo = tableData[rowIndex][5]; // Obtém o nome e link do PDF
-
-                        if (typeof pdfInfo === 'object' && pdfInfo.url) {
-                            doc.setTextColor(0, 0, 255);
-                            const textWidth = doc.getTextWidth(pdfInfo.name);
-                            const xCentered = data.cell.x + (data.cell.width - textWidth) / 2;
-                            doc.textWithLink(pdfInfo.name, xCentered, data.cell.y + 4, { url: pdfInfo.url });
-                            doc.setTextColor(0, 0, 0);
-                        }
-                    }
+                // Armazena os caminhos dos PDFs para envio ao backend
+                if (item.pdf_path) {
+                    pdfPaths.push(item.pdf_path);
                 }
             });
 
-            const fileName = `custos-${selectedYear}${selectedMonth ? `-${selectedMonth}` : ''}.pdf`;
-            doc.save(fileName);
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 10,
+                styles: { fontSize: 10, cellPadding: 3, halign: 'center' },
+                headStyles: { halign: 'center' }
+            });
+
+            // Criar um Blob com o PDF gerado
+            const pdfBlob = doc.output('blob');
+
+            // Criar um FormData para enviar os dados ao backend
+            const formData = new FormData();
+            formData.append('custos', pdfBlob, `custos-${selectedYear}${selectedMonth ? `-${selectedMonth}` : ''}.pdf`);
+            formData.append('selectedYear', selectedYear);
+            formData.append('selectedMonth', selectedMonth);
+            formData.append('pdfPaths', JSON.stringify(pdfPaths)); // Enviar lista de PDFs associados
+
+            // Log para depuração
+            console.log("🔹 Dados enviados para o backend:", {
+                selectedYear,
+                selectedMonth,
+                pdfPaths,
+                custosFile: pdfBlob
+            });
+
+            // Enviar para o backend
+            const response = await fetch('/pdf/gerar-pdf', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                // Baixar o novo PDF gerado pelo backend
+                const blob = await response.arrayBuffer();
+                const file = new Blob([blob], { type: 'application/pdf' });
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(file);
+                downloadLink.download = `custos-embutido-${selectedYear}.pdf`;
+                downloadLink.click();
+            } else {
+                console.error('Erro ao gerar PDF:', await response.text());
+            }
         })
         .catch(error => console.error('Erro ao buscar custos:', error));
 }

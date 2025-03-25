@@ -5,11 +5,13 @@ const path = require('path');
 const { PDFDocument, sortedUniq } = require('pdf-lib');
 const multer = require('multer'); // Para lidar com uploads de arquivos
 const fs = require('fs'); // Para manipulação de arquivos
+const pdfRoutes = require('./routes/pdf'); // Certifique-se de que o caminho está correto
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use('/pdf', pdfRoutes);
 
 // Servir arquivos estáticos do diretório 'frontend'
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -29,7 +31,7 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => {
         if (file.mimetype === 'application/pdf') {
             let newFilename;
-            
+
             // Verifica a URL completa para decidir o prefixo
             if (req.originalUrl.includes('/custo-variavel/')) {
                 // Para custos variáveis, adiciona 'CV_' ao nome do arquivo original
@@ -64,77 +66,65 @@ db.connect((err) => {
     console.log('Connected to database.');
 });
 
-// Endpoint para obter todos os custos com filtragem opcional
 app.get('/api/custos', (req, res) => {
-    const { search, category, month } = req.query;
-
-    // Extração de ano e mês do parâmetro 'month' (no formato 'yyyy-mm')
-    let year = null;
-    let monthOnly = null;
-    
-    if (month) {
-        const [parsedYear, parsedMonth] = month.split('-');
-        year = parsedYear;
-        monthOnly = parsedMonth;
-    }
+    const { search, category, month, year } = req.query; // Adicionando 'year' diretamente
 
     let sql = `
-        SELECT c.id, c.data, c.tipo, c.descricao_id, c.valor, c.tipo_pagamento_id, c.situacao_id, c.data_pagamento,
-               c.pdf_path, -- Inclui o caminho do PDF na resposta
-               d.nome AS descricao_nome,
-               tp.descricao AS tipo_pagamento_descricao,
-               sit.descricao AS situacao_descricao
-        FROM Custo c
-        LEFT JOIN Descricao d ON c.descricao_id = d.id
-        LEFT JOIN TipoPagamento tp ON c.tipo_pagamento_id = tp.id
-        LEFT JOIN Situacao sit ON c.situacao_id = sit.id
-        ORDER BY c.id DESC
+    SELECT c.id, c.data, c.tipo, c.descricao_id, c.valor, c.tipo_pagamento_id, c.situacao_id, c.data_pagamento,
+           c.pdf_path, 
+           d.nome AS descricao_nome,
+           tp.descricao AS tipo_pagamento_descricao,
+           sit.descricao AS situacao_descricao
+    FROM Custo c
+    LEFT JOIN Descricao d ON c.descricao_id = d.id
+    LEFT JOIN TipoPagamento tp ON c.tipo_pagamento_id = tp.id
+    LEFT JOIN Situacao sit ON c.situacao_id = sit.id
     `;
 
     const filters = [];
     const params = [];
 
-    // Filtro de pesquisa por descrição
     if (search) {
         filters.push('d.nome LIKE ?');
         params.push(`%${search}%`);
     }
 
-    // Filtro por categoria
     if (category) {
         filters.push('c.tipo = ?');
         params.push(category);
     }
 
-    // Filtro por ano e mês (se o parâmetro "month" for fornecido)
-    if (year && monthOnly) {
-        filters.push('YEAR(c.data) = ? AND MONTH(c.data) = ?');
-        params.push(year, monthOnly);
-    } else if (year) {
+    if (year) {
         filters.push('YEAR(c.data) = ?');
         params.push(year);
     }
 
-    // Se houver filtros, adiciona-os à consulta SQL
+    if (month) {
+        const [parsedYear, parsedMonth] = month.split('-');
+        filters.push('YEAR(c.data) = ? AND MONTH(c.data) = ?');
+        params.push(parsedYear, parsedMonth);
+    }
+
     if (filters.length > 0) {
         sql += ' WHERE ' + filters.join(' AND ');
     }
 
-    console.log('SQL:', sql); // Log da consulta SQL usada
+    sql += ' ORDER BY c.id DESC';
+
+    console.log('SQL Final:', sql);
+    console.log('Parâmetros:', params);
 
     db.query(sql, params, (err, results) => {
         if (err) {
             console.error('Error fetching costs:', err);
-            res.status(500).json({ error: 'Error fetching costs' });
+            res.status(500).json({ error: 'Error fetching costs', details: err });
             return;
         }
 
-        // Modifica o caminho do PDF para URL do endpoint de download
         results.forEach(result => {
             if (result.pdf_path) {
                 result.pdf_path = `/uploads/${result.pdf_path}`;
-                // Extraindo apenas o nome do arquivo
-                result.pdf_name = result.pdf_path.split('/').pop(); // Pega o nome do arquivo do caminho
+                result.pdf_name = result.pdf_path.split('/').pop();
             }
         });
 
@@ -162,9 +152,9 @@ app.put('/api/custos/:id', (req, res) => {
 // Endpoint para apagar um custo
 app.delete('/api/custos/:id', (req, res) => {
     const { id } = req.params;
-    
+
     const sql = 'DELETE FROM Custo WHERE id = ?';
-    
+
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.error('Erro ao apagar custo:', err);
@@ -183,9 +173,9 @@ app.delete('/api/custos/:id', (req, res) => {
 // Endpoint para apagar um custoVariavel
 app.delete('/api/custo-variavel/:id', (req, res) => {
     const { id } = req.params;
-    
+
     const sql = 'DELETE FROM custovariavel WHERE id = ?';
-    
+
     db.query(sql, [id], (err, result) => {
         if (err) {
             console.error('Erro ao apagar custo:', err);
@@ -513,6 +503,7 @@ app.post('/api/custo-variavel', (req, res) => {
 // Endpoint para recuperar todos os custos variáveis com filtros opcionais
 app.get('/api/custo-variavel', (req, res) => {
     const { descricao, data } = req.query; // Pegando os filtros da query string
+    
     let sql = `
         SELECT CustoVariavel.*, 
                tipo.descricao AS tipo_pagamento_descricao, 
@@ -520,23 +511,36 @@ app.get('/api/custo-variavel', (req, res) => {
         FROM CustoVariavel
         LEFT JOIN TipoPagamento tipo ON CustoVariavel.tipo_pagamento_id = tipo.id
         LEFT JOIN Situacao situacao ON CustoVariavel.situacao_id = situacao.id
-        WHERE 1=1 ORDER BY id DESC`; // Inicia com uma condição sempre verdadeira para facilitar adições dinâmicas
+    `;
 
-    let values = [];
+    let filters = []; // Guarda as condições WHERE
+    let values = []; // Guarda os parâmetros
 
+    // Condições dinâmicas
     if (descricao) {
-        sql += " AND CustoVariavel.descricao LIKE ?";
+        filters.push("CustoVariavel.descricao LIKE ?");
         values.push(`%${descricao}%`);
     }
     if (data) {
-        sql += " AND DATE(CustoVariavel.data) = ?";
+        filters.push("DATE(CustoVariavel.data) = ?");
         values.push(data);
     }
+
+    // Monta WHERE se necessário
+    if (filters.length > 0) {
+        sql += ' WHERE ' + filters.join(' AND ');
+    }
+
+    // ORDER BY deve vir no final
+    sql += ' ORDER BY CustoVariavel.id DESC';
+
+    console.log('SQL Final:', sql);
+    console.log('Parâmetros:', values);
 
     db.query(sql, values, (error, results) => {
         if (error) {
             console.error('Erro ao recuperar dados:', error);
-            return res.status(500).json({ error: 'Erro ao recuperar dados.' });
+            return res.status(500).json({ error: 'Erro ao recuperar dados.', details: error });
         }
         res.json(results);
     });
@@ -572,34 +576,34 @@ app.get('/api/custo-secundario', (req, res) => {
 
 app.post('/merge-pdfs', upload.array('pdfs', 2), async (req, res) => {
     const [pdf1Path, pdf2Path] = req.files.map(file => file.path);
-    
+
     const pdfDoc = await PDFDocument.create();
-    
+
     const pdf1Bytes = fs.readFileSync(pdf1Path);
     const pdf2Bytes = fs.readFileSync(pdf2Path);
-    
+
     const [pdf1Doc, pdf2Doc] = await Promise.all([
         PDFDocument.load(pdf1Bytes),
         PDFDocument.load(pdf2Bytes),
     ]);
-    
+
     const [pdf1Pages, pdf2Pages] = await Promise.all([
         pdf1Doc.copyPages(pdf1Doc, pdf1Doc.getPageIndices()),
         pdf2Doc.copyPages(pdf2Doc, pdf2Doc.getPageIndices()),
     ]);
-    
+
     pdfPages.forEach(page => pdfDoc.addPage(page));
-    
+
     const pdfBytes = await pdfDoc.save();
-    
+
     fs.writeFileSync('combined.pdf', pdfBytes);
-    
+
     res.download('combined.pdf', 'combined.pdf', (err) => {
         if (err) {
             console.error(err);
             res.status(500).send('Erro ao gerar PDF combinado.');
         }
-        
+
         // Limpar arquivos temporários
         fs.unlinkSync(pdf1Path);
         fs.unlinkSync(pdf2Path);
